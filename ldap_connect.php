@@ -1,7 +1,7 @@
 <?php
 require 'ldap_config.php';
-global $ldapServer, $port, $user, $password;
-
+global $ldapServer, $port, $user, $password, $searchBase, $attributes;
+date_default_timezone_set('Europe/Berlin');
 //Ldap activity log, loggt Ldap Aktivitäten wenn die Funktion aufgerufen wird.
 function logLdapActivity($message_type, $message) {
     $log_file = './logs/ldap.log';
@@ -27,6 +27,5 @@ if ($ldapBind) {
 } else {
     return null;
 }
-
 
 ?>
