@@ -1,0 +1,124 @@
+body {
+    font-family: "Archivo", sans-serif;
+}
+.headers {
+    margin-top: 20px;
+}
+.search {
+    width: 60%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.sbutton {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: white;
+    background-color: #9B233C;
+    cursor: pointer;
+}
+.sbutton:hover {
+    background-color: #651727;
+}
+.sform {
+    margin-left: 20.8%;
+    width: 60%;
+}
+.results{
+    padding-top: 10px;
+    margin-left: 10px;
+    h2{
+        margin-left: 10px;
+    }
+}
+td a{
+    border: none;
+    color: black;
+}
+.navbar {
+    background-color: #A0D4CA;
+    width: 100%;
+
+    a:hover {
+        color: #FAF6B7;
+
+    }
+    .navbar-toggler{
+        margin-right: 10px !important;
+
+    }
+}
+.pager-link{
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #78DEC8;
+    color: #0A605B;
+    border: none;
+    text-decoration: none;
+    cursor: pointer;
+}
+.pager-ellipsis {
+    padding: 10px 20px;
+    background-color: #78DEC8;
+    color: #0A605B;
+    border: none;
+
+    text-decoration: none;
+    cursor: pointer;
+}
+.pager-link:hover {
+    background-color: #FAF6B7;
+}
+
+.pager-link.active {
+    background-color: #0A605B;
+    color: white;
+}
+.pager-arrow{
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+@media only screen and  (min-width: 601px){
+    #logo-mobile {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    #logo-desktop{
+        display: none;
+    }
+
+    #logo-mobile {
+        display: inline-block;
+    }
+    .navbar a{
+        text-align: right;
+        margin-right: 10px;
+    }
+
+    .sform {
+        margin-left: 16.7%;
+        width: 100%;
+    }
+
+    .results {
+        padding-top: 10px;
+        margin-left: 0;
+        h2 {
+            margin-left: 10px;
+        }
+    }
+
+    .table {
+        font-size: 0.8em;
+    }
+    table thead th:nth-child(n+4),
+    table tbody td:nth-child(n+4) {
+        display: none;
+    }
+}

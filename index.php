@@ -2,14 +2,32 @@
 session_set_cookie_params(0);
 session_start();
 $results = isset($_SESSION['results']) ? $_SESSION['results'] : array();
+
+$limit = 20;
+$totalResults = count($results);
+$totalPages = ceil($totalResults / $limit);
+$page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
+
+// Berechnung des Startindex für array_slice()
+$startIndex = ($page - 1) * $limit;
+
+// Erhalten der Ergebnisse für die aktuelle Seite
+$pageResults = array_slice($results, $startIndex, $limit);
+
+
+
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Importieren von Bootstrap-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="icon" type="image/svg+xml" href="assets/USB_Identifier.svg">
+    <link rel="stylesheet" type="text/css" href="style/main.css" />
+
     <title>Telefonbuch</title>
 </head>
 <body>
@@ -17,6 +35,25 @@ $results = isset($_SESSION['results']) ? $_SESSION['results'] : array();
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+
+<div class="navbar">
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <a href="https://intranet.uhbs.ch/">
+            <img class="navbar-brand" src="assets/UBS_Logo.png" width="220" height="70" class="d-inline-block align-top " id="logo-desktop"/>
+            <img class="navbar-brand" src="assets/USB_Identifier_white.svg" width="62" height="50" class="d-none d-sm-inline-block align-top" id="logo-mobile" />
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link active" href="./index.php">USB Telefonbuch <span class="sr-only">(current)</span></a>
+                <a class="nav-item nav-link" href="https://usbch.sharepoint.com/sites/0031" target="_blank">UKBB Telefonbuch</a>
+                <a class="nav-item nav-link" href="https://intranet.uhbs.ch/fileadmin/user_upload/6_bereiche/dict/pagernummern_notfall.pdf" target="_blank">Notpagerliste</a>
+            </div>
+        </div>
+    </nav>
+</div>
 
 <div class="headers">
     <h1 class="text-center">Telefonbuch des USB</h1>
@@ -32,7 +69,11 @@ $results = isset($_SESSION['results']) ? $_SESSION['results'] : array();
 </div>
 
 <div class="results">
-    <h2>Ergebnisse</h2>
+    <?php if (isset($_SESSION['results'])): ?>
+    <?php if (count($results) <= 1): ?>
+        <p class="text-danger">Keine Ergebnisse gefunden.</p>
+    <?php else: ?>
+    <h2 class="text-start">Ergebnisse</h2>
     <table class="table">
         <thead>
         <tr>
@@ -47,7 +88,7 @@ $results = isset($_SESSION['results']) ? $_SESSION['results'] : array();
         </thead>
         <tbody>
         <!-- foreach Schleife für die Ergebnisse für jedes Ergebniss wird eine Tabelle generiert-->
-        <?php foreach ($results as $key => $entry): ?>
+        <?php foreach ($pageResults as $key => $entry): ?>
             <?php if ($key === 'count') continue; ?>
             <tr>
                 <!-- Ausgabe der Daten aus dem LDAP, Prüfung ob die einzelnen Parameter Daten enthalten.-->
@@ -68,6 +109,26 @@ $results = isset($_SESSION['results']) ? $_SESSION['results'] : array();
         <?php endforeach; ?>
         </tbody>
     </table>
+    <div class="pagination">
+        <?php if ($totalPages > 1): ?>
+            <a href="?page=<?php echo $page - 1; ?>" class="pager-link pager-arrow">&lsaquo;</a>
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                <?php if ($i == 1 || $i == $totalPages || ($i >= $page - 2 && $i <= $page + 2)): ?>
+                    <a href="?page=<?php echo $i; ?>" class="pager-link <?php echo ($i == $page) ? 'active' : ''; ?>"><?php echo $i; ?></a>
+                <?php elseif ($i == $page - 3 || $i == $page + 3): ?>
+                    <span class="pager-ellipsis">...</span>
+                <?php endif; ?>
+            <?php endfor; ?>
 
+            <a href="?page=<?php echo $page + 1; ?>" class="pager-link pager-arrow">&rsaquo;</a>
+        <?php endif; ?>
+    </div>
+    <?php endif; ?>
+    <?php endif; ?>
+</div>
+
+<?php
+session_destroy();
+?>
 </body>
 </html>
