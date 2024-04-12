@@ -2,10 +2,10 @@
 //LDAP Zugangsdaten
 $ldapServer = 'ldap://ictidmldplp02.uhbs.ch';
 $port = '636';
-$user = 'cn=ldapread,o=services';
+$user = '';
 $password = '';
 //LDAP Suchparameter und Attribute
-$searchBase = '';
+$searchBase = 'ou=IdentityActive5,ou=SHADOW,o=AI';
 $attributes = array("dn",
     "aigender",
     "personalTitle",

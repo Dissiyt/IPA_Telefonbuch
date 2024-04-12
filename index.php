@@ -94,8 +94,20 @@ $pageResults = array_slice($results, $startIndex, $limit);
                 <!-- Ausgabe der Daten aus dem LDAP, Prüfung ob die einzelnen Parameter Daten enthalten.-->
                 <td><?php echo isset($entry['sn'][0]) ? $entry['sn'][0] : ''; ?></td>
                 <td><?php echo isset($entry['givenname'][0]) ? $entry['givenname'][0] : ''; ?></td>
-                <td>    <?php echo isset($entry['aiusbcordlessinternal'][0]) ? $entry['aiusbcordlessinternal'][0] : ''; ?></td>
-                <td><?php echo isset($entry['mail'][0]) ? $entry['mail'][0] : ''; ?></td>
+                <td>    <?php
+                    if (isset($entry['aiusbcordlessinternal'][0])) {
+                        echo '<a href="webextel://' . $entry['aiusbcordlessinternal'][0] . '">' . $entry['aiusbcordlessinternal'][0] . '</a>';
+                    } elseif (isset($entry['aiusbtelinternal'][0])) {
+                        echo '<a href="webextel://' . $entry['aiusbtelinternal'][0] . '">' . $entry['aiusbtelinternal'][0] . '</a>';
+                    } else {
+                        echo '';
+                    }
+                    ?></td>
+                <td><?php if (isset($entry['mail'][0])) {
+                        echo '<a href="mailto:' . $entry['mail'][0] . '">' . strtolower($entry['mail'][0]) . '</a>';
+                    } else {
+                        echo '';
+                    } ?></td>
                 <td>Open in Teams</td>
                 <!-- Prüfung ob ou und aiusbdienste Daten enthalten-->
                 <td><?php echo isset($entry['ou'][0]) ? $entry['ou'][0] : ''; ?>
@@ -115,6 +127,7 @@ $pageResults = array_slice($results, $startIndex, $limit);
             <?php for ($i = 1; $i <= $totalPages; $i++): ?>
                 <?php if ($i == 1 || $i == $totalPages || ($i >= $page - 2 && $i <= $page + 2)): ?>
                     <a href="?page=<?php echo $i; ?>" class="pager-link <?php echo ($i == $page) ? 'active' : ''; ?>"><?php echo $i; ?></a>
+                <!-- Wenn eine Seite 3 Positionen von der aktiven Seite entfernt ist, wird eine ellipsis (....) eingefügt -->
                 <?php elseif ($i == $page - 3 || $i == $page + 3): ?>
                     <span class="pager-ellipsis">...</span>
                 <?php endif; ?>
@@ -127,8 +140,5 @@ $pageResults = array_slice($results, $startIndex, $limit);
     <?php endif; ?>
 </div>
 
-<?php
-session_destroy();
-?>
 </body>
 </html>
