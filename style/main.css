@@ -38,7 +38,7 @@ td a{
     color: black;
 }
 .navbar {
-    background-color: #A0D4CA;
+    background-color: #78DEC8;
     width: 100%;
 
     a:hover {
@@ -117,6 +117,7 @@ td a{
     .table {
         font-size: 0.8em;
     }
+    /* Ausblenden alles Spalten ab Spalte 4 für bessere Übersicht auf Mobile */
     table thead th:nth-child(n+4),
     table tbody td:nth-child(n+4) {
         display: none;

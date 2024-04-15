@@ -2,7 +2,7 @@
 require 'ldap_config.php';
 global $ldapServer, $port, $user, $password, $searchBase, $attributes;
 date_default_timezone_set('Europe/Berlin');
-//Ldap activity log, loggt Ldap Aktivitäten wenn die Funktion aufgerufen wird.
+//Ldap activity log, loggt Ldap Aktivitäten, wenn die Funktion aufgerufen wird.
 function logLdapActivity($message_type, $message) {
     $log_file = './logs/ldap.log';
     $log_entry = date('Y-m-d H:i:s') . " - [$message_type] " . $message . "\n";
@@ -18,7 +18,7 @@ function ldapErrorHandler($errno, $errstr)
 }
 set_error_handler('ldapErrorHandler');
 
-//Verbingung zu LDAP Server
+//Verbindung zu LDAP Server
 $ldapConn = ldap_connect($ldapServer, $port);
 
 $ldapBind = ldap_bind($ldapConn, $user, $password);

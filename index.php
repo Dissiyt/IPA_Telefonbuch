@@ -1,8 +1,23 @@
 <?php
 session_set_cookie_params(0);
 session_start();
-$results = isset($_SESSION['results']) ? $_SESSION['results'] : array();
+require 'ldap_connect.php';
 
+//Session timeout nach 5 Minuten inaktivität
+if (isset($_SESSION['last_activity'])) {
+    $timeout = 300;
+
+    if (time() - $_SESSION['last_activity'] > $timeout) {
+        session_destroy();
+        logLdapActivity('SUCCESS', 'Session was destroyed');
+    } else {
+        $_SESSION['last_activity'] = time();
+    }
+} else {
+    $_SESSION['last_activity'] = time();
+}
+
+$results = isset($_SESSION['results']) ? $_SESSION['results'] : array();
 $limit = 20;
 $totalResults = count($results);
 $totalPages = ceil($totalResults / $limit);
@@ -47,7 +62,7 @@ $pageResults = array_slice($results, $startIndex, $limit);
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-                <a class="nav-item nav-link active" href="./index.php">USB Telefonbuch <span class="sr-only">(current)</span></a>
+                <a class="nav-item nav-link active" href="./index.php">USB Telefonbuch</a>
                 <a class="nav-item nav-link" href="https://usbch.sharepoint.com/sites/0031" target="_blank">UKBB Telefonbuch</a>
                 <a class="nav-item nav-link" href="https://intranet.uhbs.ch/fileadmin/user_upload/6_bereiche/dict/pagernummern_notfall.pdf" target="_blank">Notpagerliste</a>
             </div>
@@ -71,7 +86,7 @@ $pageResults = array_slice($results, $startIndex, $limit);
 <div class="results">
     <?php if (isset($_SESSION['results'])): ?>
     <?php if (count($results) <= 1): ?>
-        <p class="text-danger">Keine Ergebnisse gefunden.</p>
+        <p class="text-danger">Keine Treffer zu Ihrer Suchanfrage.</p>
     <?php else: ?>
     <h2 class="text-start">Ergebnisse</h2>
     <table class="table">
@@ -108,7 +123,12 @@ $pageResults = array_slice($results, $startIndex, $limit);
                     } else {
                         echo '';
                     } ?></td>
-                <td>Open in Teams</td>
+                <td><?php if (isset($entry['mail'][0])) {
+                        $mailString = strtolower($entry['mail'][0]);
+                        echo '<a href="MSTeams:/l/chat/0/0?users='. $mailString . '">Open in Teams</a>';
+                    } else {
+                        echo '';
+                    } ?></td>
                 <!-- Prüfung ob ou und aiusbdienste Daten enthalten-->
                 <td><?php echo isset($entry['ou'][0]) ? $entry['ou'][0] : ''; ?>
                     <?php  if (isset($entry['ou'][0]) && isset($entry['aiusbdienste'][0])) {
