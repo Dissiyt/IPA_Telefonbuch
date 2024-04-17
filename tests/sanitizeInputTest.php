@@ -19,7 +19,7 @@ class sanitizeInputTest extends TestCase
     public function testSanitizeInputAllowsAllowedCharacters()
     {
         $input = "yannic.schuepbach@usb.ch";
-        $expectedOutput = "yannic.schuepbach@usb.ch"; // Assuming these chars are allowed
+        $expectedOutput = "yannic.schuepbach@usb.ch";
         $result = sanitizeInput($input);
         $this->assertEquals($expectedOutput, $result);
     }

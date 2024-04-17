@@ -3,7 +3,7 @@ use PHPUnit\Framework\TestCase;
 require_once 'ldap_connect.php';
 require_once 'ldap_config.php';
 
-// This interface represents your LDAP interactions (Important for decoupling)
+// Dieses Interface wird verwendet, um den LDAP-Connector zu mocken
 interface LdapConnectorInterface {
     public function connect($server, $port);
     public function bind($connection, $user, $password);
@@ -19,11 +19,9 @@ class ldap_connectTest extends TestCase
 
     public function testSuccessfulAuthentication()
     {
-        // Configure the mock
-        $this->ldapConnectorMock->expects($this->once())->method('connect')->willReturn(true); // Simulate successful connection
-        $this->ldapConnectorMock->expects($this->once())->method('bind')->willReturn(true); // Simulate successful bind
+        $this->ldapConnectorMock->expects($this->once())->method('connect')->willReturn(true);
+        $this->ldapConnectorMock->expects($this->once())->method('bind')->willReturn(true);
 
-        // You'll need a class (or logic) that uses the LdapConnectorInterface
         $ldapHandler = new LdapHandler($this->ldapConnectorMock);
 
         $result = $ldapHandler->authenticate('username', 'password');
@@ -31,11 +29,9 @@ class ldap_connectTest extends TestCase
     }
     public function testFailedAuthentication()
     {
-        // Configure the mock
+
         $this->ldapConnectorMock->expects($this->once())->method('connect')->willReturn(true);
         $this->ldapConnectorMock->expects($this->once())->method('bind')->willReturn(false);
-
-        // Instantiate your authenticator (injecting the mock)
         $ldapHandler = new LdapHandler($this->ldapConnectorMock);
 
         $result = $ldapHandler->authenticate('username', 'password');
@@ -44,8 +40,6 @@ class ldap_connectTest extends TestCase
     public function testConnectionSuccess()
     {
         $this->ldapConnectorMock->expects($this->once())->method('connect')->willReturn(true);
-
-        // Instantiate LdapHandler with the mock
         $ldapHandler = new LdapHandler($this->ldapConnectorMock);
 
         $ldapHandler->authenticate('username', 'password');
@@ -62,7 +56,7 @@ class ldap_connectTest extends TestCase
 
 }
 
-
+//Stellt eine Klasse dar, die die LDAP-Verbindung und Authentifizierung behandelt
 class LdapHandler {
     private $ldapConnector;
 
@@ -72,7 +66,7 @@ class LdapHandler {
 
     public function authenticate($username, $password) {
         global $ldapServer, $port;
-        $ldapConn = $this->ldapConnector->connect($ldapServer, $port); // Use the interface
+        $ldapConn = $this->ldapConnector->connect($ldapServer, $port);
         if (!$ldapConn) {
             throw new LdapConnectionException("Failed to connect to LDAP server");
         }
